@@ -1,63 +1,68 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Espresso World Map 📍</title>
-  <style>
-    body {
-      margin: 0;
-      background: #FCEBDE;
-      font-family: Arial, sans-serif;
-    }
-    #map-wrapper {
-      position: relative;
-      width: 100vw;
-      max-width: 100%;
-      height: 100vh;
-      overflow: hidden;
-    }
-    svg {
-      width: 100vw;
-      height: 100vh;
-      max-width: 100%;
-      max-height: 100%;
-      display: block;
-    }
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Espresso World Map 📍</title>
+<style>
+  body {
+    margin: 0;
+    background: #FCEBDE;
+    font-family: Arial, sans-serif;
+  }
+  #map-wrapper {
+    position: relative;
+    width: 100vw;
+    max-width: 100%;
+    height: 100vh;
+    overflow: hidden;
+  }
+  svg {
+    width: 100vw;
+    height: 100vh;
+    max-width: 100%;
+    max-height: 100%;
+    display: block;
+  }
+  .pin {
+    position: absolute;
+    font-size: 2.2vw;
+    pointer-events: none;
+    z-index: 10;
+    filter: drop-shadow(0 1px 3px #fff);
+    transform: translate(-50%, -100%);
+    user-select: none;
+  }
+  .label {
+    position: absolute;
+    color: #fff;
+    font-weight: 700;
+    font-size: 1vw;
+    text-shadow: 
+      -1px -1px 0 #000,  
+       1px -1px 0 #000,
+      -1px  1px 0 #000,
+       1px  1px 0 #000;
+    white-space: nowrap;
+    pointer-events: none;
+    transform: translate(-50%, 0);
+    user-select: none;
+  }
+  @media (max-width: 700px) {
     .pin {
-      position: absolute;
-      font-size: 2.2vw;
-      pointer-events: none;
-      z-index: 10;
-      filter: drop-shadow(0 1px 3px #fff);
-      transform: translate(-50%, -100%);
-      user-select: none;
+      font-size: 5vw;
     }
     .label {
-      position: absolute;
-      color: #DE9E67;
-      font-weight: bold;
-      font-size: 1vw;
-      white-space: nowrap;
-      pointer-events: none;
-      text-shadow: 1px 1px 1px #fff;
-      transform: translate(-50%, 0);
-      user-select: none;
+      font-size: 3vw;
+      margin-top: 0.5rem;
     }
-    @media (max-width: 700px) {
-      .pin {
-        font-size: 5vw;
-      }
-      .label {
-        font-size: 3vw;
-        margin-top: 0.5rem;
-      }
-    }
-  </style>
+  }
+</style>
 </head>
 <body>
   <div id="map-wrapper">
-    <!-- Paste your full SVG map code between these tags -->
+    <!-- Вставьте ваш SVG сюда (не удаляйте, он нужон для карты!) -->
+    <!-- Ваш SVG-код карты начинается -->
     <svg width="1880" height="1080" viewBox="0 0 1880 1080" fill="none" xmlns="http://www.w3.org/2000/svg">
 <g clip-path="url(#clip0_2_5137)">
 <g filter="url(#filter0_f_2_5137)">
@@ -6040,56 +6045,52 @@
 </defs>
 </svg>
 
+    <!-- Конец SVG -->
   </div>
 
-  <script>
-    // City coordinates relative to your SVG viewBox 1880x1080
-    const cities = [
-      { name: "Denver", x: 540, y: 370 },
-      { name: "San Francisco", x: 320, y: 390 },
-      { name: "New York", x: 890, y: 280 },
-      { name: "Cannes", x: 1050, y: 360 },
-      { name: "Bangkok", x: 1420, y: 520 },
-      { name: "Brussels", x: 1010, y: 330 },
-      { name: "Berlin", x: 1100, y: 290 },
-      { name: "Seoul", x: 1580, y: 250 },
-      { name: "Buenos Aires", x: 770, y: 870 }
-    ];
+<script>
+  const cities = [
+    { name: "Denver", x: 535, y: 375 },
+    { name: "San Francisco", x: 325, y: 400 },
+    { name: "New York", x: 880, y: 295 },
+    { name: "Cannes", x: 1055, y: 370 },
+    { name: "Bangkok", x: 1430, y: 510 },
+    { name: "Brussels", x: 1000, y: 335 },
+    { name: "Berlin", x: 1100, y: 295 },
+    { name: "Seoul", x: 1585, y: 260 },
+    { name: "Buenos Aires", x: 770, y: 875 }
+  ];
 
-    // Render pins and labels
-    function renderPins() {
-      const map = document.getElementById('map-wrapper');
+  function renderPins() {
+    const map = document.getElementById('map-wrapper');
 
-      // Remove old pins and labels
-      document.querySelectorAll('.pin, .label').forEach(e => e.remove());
+    // Удаляем старые элементы
+    document.querySelectorAll('.pin, .label').forEach(e => e.remove());
 
-      // Get size of SVG container and calculate scaling
-      const rect = map.getBoundingClientRect();
-      const scaleX = rect.width / 1880;
-      const scaleY = rect.height / 1080;
+    const rect = map.getBoundingClientRect();
+    const scaleX = rect.width / 1880;
+    const scaleY = rect.height / 1080;
 
-      cities.forEach(city => {
-        // Create pin element (emoji)
-        const pin = document.createElement('div');
-        pin.className = 'pin';
-        pin.textContent = '📍';
-        pin.style.left = (city.x * scaleX) + 'px';
-        pin.style.top = (city.y * scaleY) + 'px';
+    cities.forEach(city => {
+      let pin = document.createElement('div');
+      pin.className = 'pin';
+      pin.textContent = '📍';
+      pin.style.left = (city.x * scaleX) + 'px';
+      pin.style.top = (city.y * scaleY) + 'px';
 
-        // Create label element
-        const label = document.createElement('div');
-        label.className = 'label';
-        label.textContent = city.name;
-        label.style.left = (city.x * scaleX) + 'px';
-        label.style.top = (city.y * scaleY + 30) + 'px';
+      let label = document.createElement('div');
+      label.className = 'label';
+      label.textContent = city.name;
+      label.style.left = (city.x * scaleX) + 'px';
+      label.style.top = (city.y * scaleY + 30) + 'px';
 
-        map.appendChild(pin);
-        map.appendChild(label);
-      });
-    }
+      map.appendChild(pin);
+      map.appendChild(label);
+    });
+  }
 
-    window.addEventListener('DOMContentLoaded', renderPins);
-    window.addEventListener('resize', renderPins);
-  </script>
+  window.addEventListener('DOMContentLoaded', renderPins);
+  window.addEventListener('resize', renderPins);
+</script>
 </body>
 </html>
