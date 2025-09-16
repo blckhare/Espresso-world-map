@@ -20,22 +20,14 @@
         .leaflet-container {
             background: #FCEBDE; /* Beige background for map */
         }
-        .city-pin {
-            background: #F0E89D; /* Citrus - pin color */
-            border-radius: 50%;
-            width: 12px;
-            height: 12px;
-            border: 2px solid #DE9E67;
-            position: absolute;
-            transform: translate(-50%, -50%);
-        }
         .city-label {
             position: absolute;
             color: #DE9E67;
-            font-size: 12px;
+            font-size: 14px;
             font-weight: bold;
             transform: translate(-50%, -100%);
             white-space: nowrap;
+            margin-top: -4px;
         }
     </style>
 </head>
@@ -48,18 +40,17 @@
     <div id="map"></div>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>
-        // Initialize map with low zoom for global view
-        var map = L.map('map').setView([20, 0], 2); // Centered on Europe/Africa, zoom 2 for minimal detail
+        // Initialize map
+        var map = L.map('map').setView([20, 0], 2);
 
-        // Base layer: OpenStreetMap with custom styles (beige background, no labels)
+        // Base layer: OpenStreetMap
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '© OpenStreetMap contributors',
             maxZoom: 4,
-            minZoom: 2,
-            // Custom style to remove labels and set beige background via CSS
+            minZoom: 2
         }).addTo(map);
 
-        // Highlighted countries (filled with #DE9E67)
+        // Highlighted countries (filled rectangles, no border)
         var highlightedCountries = [
             { lat: 39.8282, lng: -98.5795 }, // USA
             { lat: 46.2276, lng: 2.2137 },   // France
@@ -69,16 +60,15 @@
             { lat: 35.9078, lng: 127.7669 }, // Korea
             { lat: -38.4161, lng: -63.6167 } // Argentina
         ];
-
         highlightedCountries.forEach(function(country) {
             L.rectangle([[country.lat - 10, country.lng - 20], [country.lat + 10, country.lng + 20]], {
-                color: "#DE9E67",
                 fillColor: "#DE9E67",
-                fillOpacity: 0.5
+                fillOpacity: 0.5,
+                weight: 0 // Border is removed
             }).addTo(map);
         });
 
-        // List of past event cities with coordinates
+        // Past event cities
         var pastEvents = [
             { lat: 39.7392, lng: -104.9903, name: "Denver" },
             { lat: 37.7749, lng: -122.4194, name: "San Francisco" },
@@ -89,30 +79,35 @@
             { lat: 52.5200, lng: 13.4050, name: "Berlin" }
         ];
 
-        // List of upcoming event cities
+        // Upcoming event cities
         var futureEvents = [
             { lat: 37.5665, lng: 126.9780, name: "Seoul" },
             { lat: -34.6118, lng: -58.3960, name: "Buenos Aires" }
         ];
 
-        // Add pins and labels for past events
+        // Pin icon as emoji
+        var pinEmoji = '<div style="font-size:22px;">📍</div>';
+
+        // Past event pins
         pastEvents.forEach(function(event) {
-            var pin = L.marker([event.lat, event.lng], {
+            L.marker([event.lat, event.lng], {
                 icon: L.divIcon({
-                    className: 'city-pin',
-                    html: '<div class="city-pin"></div><div class="city-label">' + event.name + '</div>',
-                    iconSize: [20, 20]
+                    className: '',
+                    html: pinEmoji + `<div class="city-label">${event.name}</div>`,
+                    iconSize: [24, 24],
+                    popupAnchor: [0, -20]
                 })
             }).addTo(map);
         });
 
-        // Add pins and labels for future events
+        // Upcoming event pins
         futureEvents.forEach(function(event) {
-            var pin = L.marker([event.lat, event.lng], {
+            L.marker([event.lat, event.lng], {
                 icon: L.divIcon({
-                    className: 'city-pin',
-                    html: '<div class="city-pin"></div><div class="city-label">' + event.name + '</div>',
-                    iconSize: [20, 20]
+                    className: '',
+                    html: pinEmoji + `<div class="city-label">${event.name}</div>`,
+                    iconSize: [24, 24],
+                    popupAnchor: [0, -20]
                 })
             }).addTo(map);
         });
